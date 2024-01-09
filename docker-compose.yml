@@ -1,0 +1,82 @@
+
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - ./api:/app
+    depends_on:
+      - client
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3006:3006"
+    volumes:
+      - ./client:/app
+
+
+
+
+
+
+
+
+
+# version: '3.6'
+
+# #
+# # [ server stack ]
+# #
+# services:
+#   calendar-client:
+#     image: calendar:local
+#     command: npm run start
+#     build:
+#       context: ../../
+#     networks:
+#       - public
+#     volumes:
+#       - type: bind
+#         source: ./client
+#         target: /app/client
+#       # - type: bind
+#       #   source: ../../libs
+#       #   target: /app/libs
+#     ports:
+#       - "4200:4200/tcp"
+
+#   calendar-api:
+#     image: calendar:local
+#     command: npm run start
+#     build:
+#       context: ../../
+#     # networks:
+#     #   - public
+#     volumes:
+#       - type: bind
+#         source: ./api
+#         target: /app/api
+#       # - type: bind
+#       #   source: ../../libs
+#       #   target: /app/libs
+#     ports:
+#       - "3000:3000/tcp"
+#     env_file:
+#       - ./api/.env.local
+
+#
+# [ networks definition ]
+#
+# networks:
+#   public:
+#     external: true
+#     name: b-cube-public
