@@ -1,12 +1,11 @@
 import dotenv from "dotenv";
-
 dotenv.config();
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyDlNTnovnOuiwjHwRocafU9liaW3GOweRI",
-  authDomain: "calendar-4a2ca.firebaseapp.com",
-  projectId: "calendar-4a2ca",
-  storageBucket: "calendar-4a2ca.appspot.com",
-  messagingSenderId: "854216189630",
-  appId: "1:854216189630:web:6843810982d4543482e0ef",
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
 };

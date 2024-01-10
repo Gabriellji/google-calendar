@@ -1,5 +1,5 @@
+import { JwtPayload } from "jsonwebtoken";
 import type { OAuth2GrantType, OAuth2Scope } from "./oauth2";
-import { Session } from "express-session";
 
 interface OAuth2TokenParams {
   client_id: string;
@@ -61,3 +61,6 @@ export interface OpenidTokenPayload {
   exp: number;
   nonce: string;
 }
+
+export type TokenAndJwtResponse<T extends OAuth2Scope> =
+  OAuth2TokenSuccessResponse<T> & JwtPayload;

@@ -10,7 +10,3 @@ export enum OAuth2Scope {
 	OPENID_AND_EMAIL_AND_PROFILE_AND_CALENDAR = 'openid email profile https://www.googleapis.com/auth/calendar.readonly',
 	NO_TOKEN = ''
 }
-
-export enum OAuth2SecondFactorMethod {
-	AUTHENTICATOR = 'authenticator',
-}
