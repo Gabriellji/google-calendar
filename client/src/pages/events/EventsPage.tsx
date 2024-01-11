@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ClientRoute } from "../../constants/routes";
 
 import styled from "styled-components";
+import Loader from "../../components/Loader";
 
 const EventsPageContainer = styled.div`
   display: flex;
@@ -32,7 +33,11 @@ const LogoutButton = styled(Button)`
 
 const EventsPage = () => {
   const { sendRequest, isLoading, error } = useApiRequest();
-  const { data: events, isLoading: isEventsLoading, error: eventError} = useApi<Event[]>(EVENTS_URL);
+  const {
+    data: events,
+    isLoading: isEventsLoading,
+    error: eventError,
+  } = useApi<Event[]>(EVENTS_URL);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -45,14 +50,25 @@ const EventsPage = () => {
       navigate(ClientRoute.LOGIN);
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <EventsPageContainer>
       <LogoutContainer>
-        <LogoutButton onClick={handleLogout}>
-          Logout
-        </LogoutButton>
+        <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </LogoutContainer>
-	  <EventsTable events={events} isLoading={isEventsLoading} error={eventError} />
+      <EventsTable
+        events={events}
+        isLoading={isEventsLoading}
+        error={eventError}
+      />
     </EventsPageContainer>
   );
 };

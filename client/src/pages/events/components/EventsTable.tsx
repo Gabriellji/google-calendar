@@ -3,6 +3,7 @@ import MainTable from "../../../components/Table";
 import Modal from "../../../components/Modal";
 import { formatDate } from "../../../utils/formatters";
 import { Event, EventAttendee } from "../../../types/eventTypes";
+import Loader from "../../../components/Loader";
 
 interface EventsTableProps {
   events: Event[] | null;
@@ -38,7 +39,7 @@ const EventsTable = ({ events, isLoading, error }: EventsTableProps) => {
   ];
 
   if (isLoading) {
-    return <div>Loading events...</div>;
+    return <Loader />;
   }
 
   if (error) {

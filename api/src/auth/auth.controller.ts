@@ -26,12 +26,9 @@ export class AuthController {
         code
       );
 
-	  console.log('RESPONSE', response)
-
     const existingUser = await this.userService.getUser(response.sub);
 
     if (!existingUser) {
-      console.log("Creating new user");
       const newUser = new User({
         userId: response.sub,
         email: response.email,
@@ -52,6 +49,5 @@ export class AuthController {
     const accessToken = req.headers.authorization?.split(" ")[1];
     await this.oAuth2Service.revokeToken(accessToken);
     await this.userService.deleteUser(req.userID);
-    res.status(200).send("User deleted");
   }
 }

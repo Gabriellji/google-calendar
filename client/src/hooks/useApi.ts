@@ -14,7 +14,6 @@ export interface ApiRequestHook {
   ) => Promise<AxiosResponse<any>>;
   isLoading: boolean;
   error: Error | null;
-  responseStatus: number | null;
 }
 
 export const useApi = <T = any>(
@@ -22,7 +21,7 @@ export const useApi = <T = any>(
   options?: AxiosRequestConfig
 ): ApiResponse<T> => {
   const [data, setData] = useState<T | null>(null);
-  const { sendRequest, isLoading, error, responseStatus } = useApiRequest();
+  const { sendRequest, isLoading, error } = useApiRequest();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,10 +39,9 @@ export const useApi = <T = any>(
   return { data, isLoading, error };
 };
 
-export const useApiRequest = (): ApiRequestHook => {
+export const useApiRequest = ():ApiRequestHook => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const [responseStatus, setResponseStatus] = useState<number | null>(null);
 
   const sendRequest = async (url: string, options?: AxiosRequestConfig) => {
     const accessToken = localStorage.getItem("accessToken");
@@ -57,7 +55,6 @@ export const useApiRequest = (): ApiRequestHook => {
 
     try {
       const response = await axios(url, { ...options, headers });
-      setResponseStatus(response.status);
       return response;
     } catch (error: any) {
       console.error("API request failed:", error);
@@ -68,5 +65,5 @@ export const useApiRequest = (): ApiRequestHook => {
     }
   };
 
-  return { sendRequest, isLoading, error, responseStatus };
+  return { sendRequest, isLoading, error };
 };
