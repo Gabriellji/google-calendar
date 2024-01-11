@@ -9,7 +9,7 @@ import {
   OAuth2TokenSuccessResponse,
   TokenAndJwtResponse,
 } from "./types/oauth2-token";
-import { verifyIdToken } from "./jwt.validator";
+import { verifyIdToken } from "./jwt.util";
 import { JwtPayload } from "jsonwebtoken";
 
 export class OAuth2Service {
@@ -60,7 +60,6 @@ export class OAuth2Service {
         ...data,
       };
     } catch (exception) {
-		console.log('HEEEEEERE', exception)
       throw exception;
     }
   }

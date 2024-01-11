@@ -1,21 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClientRoute } from '../../constants/routes';
+import Loader from '../../components/Loader';
 
-const AuthCallbackComponent = () => {
-
+export const AuthCallbackComponent = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('accessToken');
-    if (token) {
-      localStorage.setItem('accessToken', token);
-      navigate(ClientRoute.EVENTS);
-    }
+    navigate(ClientRoute.EVENTS);
   }, [navigate]);
 
-  return <div>Loading...</div>;
+  return <Loader />;
 };
 
 export default AuthCallbackComponent;

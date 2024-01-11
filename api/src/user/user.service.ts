@@ -1,5 +1,5 @@
 import firebase from "../firebase";
-import { User, userConverter } from "./user.model";
+import { User } from "./user.model";
 import {
   getFirestore,
   doc,
@@ -20,9 +20,9 @@ export class UserService {
   public async createUser(user: User): Promise<void> {
     try {
       const userRef = doc(this.db, "users", user.userId).withConverter(
-        userConverter
+        User
       );
-      await setDoc(userRef, user);
+      return await setDoc(userRef, user);
     } catch (error) {
       console.log("Error adding user document: ", error);
     }
@@ -30,7 +30,7 @@ export class UserService {
 
   public async getUser(id: string): Promise<User | null> {
     try {
-      const userRef = doc(this.db, "users", id).withConverter(userConverter);
+      const userRef = doc(this.db, "users", id).withConverter(User);
       const docSnap = await getDoc(userRef);
 
       if (docSnap.exists()) {

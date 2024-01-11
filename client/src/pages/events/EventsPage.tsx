@@ -43,10 +43,8 @@ const EventsPage = () => {
   const handleLogout = async () => {
     const response = await sendRequest(LOGOUT_URL, {
       method: "POST",
-      withCredentials: true,
     });
     if (response.status === 200) {
-      localStorage.removeItem("accessToken");
       navigate(ClientRoute.LOGIN);
     }
   };

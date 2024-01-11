@@ -1,9 +1,16 @@
-import { JwtHeader, SigningKeyCallback, VerifyOptions, JwtPayload, verify } from "jsonwebtoken";
+import {
+  JwtHeader,
+  SigningKeyCallback,
+  VerifyOptions,
+  JwtPayload,
+  verify,
+  sign,
+} from "jsonwebtoken";
 import jwksClient, { JwksClient, SigningKey } from "jwks-rsa";
 
 function getKey(header: JwtHeader, callback: SigningKeyCallback): void {
   const client: JwksClient = jwksClient({
-    jwksUri: process.env.GOOGLE_CERT_URL || ''
+    jwksUri: process.env.GOOGLE_CERT_URL || "",
   });
 
   client.getSigningKey(header.kid, (err: Error | null, key?: SigningKey) => {
@@ -20,6 +27,12 @@ function getKey(header: JwtHeader, callback: SigningKeyCallback): void {
   });
 }
 
+export function createSessionToken(userId: string) {
+  return sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+}
+
 export async function verifyIdToken(
   idToken: string,
   clientId: string
@@ -31,21 +44,16 @@ export async function verifyIdToken(
   };
 
   return new Promise((resolve, reject) => {
-    verify(
-      idToken,
-      getKey,
-      verifyOptions,
-      (err, decoded) => {
-        if (err) {
-          return reject(err);
-        }
-
-        if (decoded) {
-          resolve(decoded as JwtPayload);
-        } else {
-          reject(new Error("Invalid token"));
-        }
+    verify(idToken, getKey, verifyOptions, (err, decoded) => {
+      if (err) {
+        return reject(err);
       }
-    );
+
+      if (decoded) {
+        resolve(decoded as JwtPayload);
+      } else {
+        reject(new Error("Invalid token"));
+      }
+    });
   });
 }

@@ -12,8 +12,7 @@ interface EventsTableProps {
 }
 
 const EventsTable = ({ events, isLoading, error }: EventsTableProps) => {
-  const [selectedEvent, setSelectedEvent] =
-    useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const columns = [
     {
@@ -22,15 +21,12 @@ const EventsTable = ({ events, isLoading, error }: EventsTableProps) => {
     },
     {
       Header: "Date",
-      accessor: (item: Event) =>
-        formatDate(item.start?.dateTime),
+      accessor: (item: Event) => formatDate(item.start?.dateTime),
     },
     {
       Header: "Attendees",
       accessor: (item: Event) =>
-        item?.attendees?.map(
-          (item: EventAttendee) => item.email + ", "
-        ),
+        item?.attendees?.map((item: EventAttendee) => item.email + ", "),
     },
     {
       Header: "Location",
@@ -48,12 +44,14 @@ const EventsTable = ({ events, isLoading, error }: EventsTableProps) => {
 
   return (
     <div>
-      {events && (
+      {events && events.length > 0 ? (
         <MainTable
           data={events}
           columns={columns}
           onRowClick={setSelectedEvent}
         />
+      ) : (
+        <div>No events found</div>
       )}
 
       <Modal
@@ -70,10 +68,7 @@ const EventsTable = ({ events, isLoading, error }: EventsTableProps) => {
               {selectedEvent.attendees && selectedEvent.attendees.length > 0 ? (
                 <ul>
                   {selectedEvent.attendees.map(
-                    (
-                      attendee: any,
-                      index: number
-                    ) => (
+                    (attendee: any, index: number) => (
                       <li key={index}>{attendee.email}</li>
                     )
                   )}
@@ -82,8 +77,8 @@ const EventsTable = ({ events, isLoading, error }: EventsTableProps) => {
                 <span> No attendees</span>
               )}
             </div>
-            <p>Location: {selectedEvent.location ?? " Not specified"}</p>
-            <p>Summary: {selectedEvent.description ?? "Not specified"}</p>
+            <p>Location: {selectedEvent.location ?? "N/A"}</p>
+            <p>Summary: {selectedEvent.description ?? "N/A"}</p>
             <p>Organizer: {selectedEvent.organizer?.email}</p>
             <p>Created: {formatDate(selectedEvent.created)}</p>
             <p>Updated: {formatDate(selectedEvent.updated)}</p>

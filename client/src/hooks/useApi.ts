@@ -39,31 +39,25 @@ export const useApi = <T = any>(
   return { data, isLoading, error };
 };
 
-export const useApiRequest = ():ApiRequestHook => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const sendRequest = async (url: string, options?: AxiosRequestConfig) => {
-    const accessToken = localStorage.getItem("accessToken");
-    const headers = {
-      ...options?.headers,
-      Authorization: `Bearer ${accessToken}`,
-      withCredentials: true,
-    };
-
-    setIsLoading(true);
-
-    try {
-      const response = await axios(url, { ...options, headers });
-      return response;
-    } catch (error: any) {
-      console.error("API request failed:", error);
-      setError(error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
+export const useApiRequest = (): ApiRequestHook => {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<Error | null>(null);
+  
+	const sendRequest = async (url: string, options?: AxiosRequestConfig) => {
+	  setIsLoading(true);
+  
+	  try {
+		const response = await axios(url, { ...options, withCredentials: true });
+		return response;
+	  } catch (error: any) {
+		console.error("API request failed:", error);
+		setError(error);
+		throw error;
+	  } finally {
+		setIsLoading(false);
+	  }
+	};
+  
+	return { sendRequest, isLoading, error };
   };
-
-  return { sendRequest, isLoading, error };
-};
+  

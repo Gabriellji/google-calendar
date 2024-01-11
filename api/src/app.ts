@@ -1,11 +1,16 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { setupRoutes } from "./routes";
+// import { setupRoutes } from "./routes";
+import cookieParser from 'cookie-parser';
+import authRoutes from "./auth/auth.routes";
+import eventsRoutes from "./event/events.routes";
 
 dotenv.config();
 
 const app: Express = express();
+
+app.use(cookieParser());
 
 app.use(
   cors({
@@ -17,6 +22,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-setupRoutes(app);
+app.use('/auth', authRoutes);
+app.use('/calendar-events', eventsRoutes);
 
 export default app;

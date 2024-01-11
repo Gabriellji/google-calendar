@@ -6,11 +6,10 @@ import {
   Body,
   Row,
   HeaderCell,
-  Cell
+  Cell,
 } from "@table-library/react-table-library/table";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { Event } from "../types/eventTypes";
-
 
 interface TableProps {
   data: Event[];
@@ -59,39 +58,41 @@ const THEME = {
 	`,
 };
 
-const MainTable: React.FC<TableProps> = ({
-  data,
-  columns,
-  onRowClick,
-}) => {
+const MainTable: React.FC<TableProps> = ({ data, columns, onRowClick }) => {
   const tableData = { nodes: data };
   const theme = useTheme(THEME);
 
   return (
-      <Table data={tableData} theme={theme}>
-        {(tableList: any) => (
-          <>
-            <Header>
-              <HeaderRow>
-                {columns.map((column, index) => (
-                  <HeaderCell key={index}>{column.Header}</HeaderCell>
-                ))}
-              </HeaderRow>
-            </Header>
-            <Body>
-              {tableList.map((item: any) => (
-                <Row key={item.id} item={item} onClick={() => onRowClick(item)}>
-                  {columns.map((column, index) => (
-                    <Cell key={index}>
-                      {column.accessor ? column.accessor(item) : ""}
-                    </Cell>
-                  ))}
-                </Row>
+    <Table data={tableData} theme={theme}>
+      {(tableList: Event[]) => (
+        <>
+          <Header>
+            <HeaderRow>
+              {columns.map((column, index) => (
+                <HeaderCell key={index}>{column.Header}</HeaderCell>
               ))}
-            </Body>
-          </>
-        )}
-      </Table>
+            </HeaderRow>
+          </Header>
+          <Body>
+            {tableList.map((item: any) => (
+              <Row key={item.id} item={item} onClick={() => onRowClick(item)}>
+                {columns.map((column, index) => (
+                  <Cell key={index}>
+                    {
+                      column.accessor &&
+                      column.accessor(item) !== undefined &&
+                      column.accessor(item) !== null
+                        ? column.accessor(item)
+                        : "N/A"
+                    }
+                  </Cell>
+                ))}
+              </Row>
+            ))}
+          </Body>
+        </>
+      )}
+    </Table>
   );
 };
 

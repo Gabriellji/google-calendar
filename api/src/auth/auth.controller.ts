@@ -3,6 +3,8 @@ import { OAuth2Service } from "./oauth2.service";
 import { OAuth2Scope } from "./types/oauth2";
 import { UserService } from "../user/user.service";
 import { User } from "../user/user.model";
+import { AppSessionKey } from "./types/session";
+import { createSessionToken } from "./jwt.util";
 
 export class AuthController {
   private oAuth2Service: OAuth2Service;
@@ -34,20 +36,40 @@ export class AuthController {
         email: response.email,
         firstName: response.given_name,
         lastName: response.family_name,
+        tokens: {
+          access_token: response.access_token,
+          refresh_token: response.refresh_token || null,
+        },
         createdAt: new Date(),
         updatedAt: new Date(),
       });
 
       await this.userService.createUser(newUser);
+    } else {
+      await this.userService.updateUser(response.sub, {
+        tokens: {
+          access_token: response.access_token,
+          refresh_token: response.refresh_token || null,
+        },
+      });
     }
 
-    const clientRedirectUrl = `${process.env.CLIENT_URL}/login/oauth-callback?accessToken=${response.access_token}`;
-    res.redirect(clientRedirectUrl);
+    const sessionToken = createSessionToken(response.sub);
+    res.cookie(AppSessionKey.SESSION_TOKEN, sessionToken, {}); // { httpOnly: true, secure: true }
+    res.redirect(process.env.CLIENT_URL + "/login/oauth-callback");
+  }
+
+  checkSession(req: Request, res: Response): void {
+    res.status(200).send("Session is valid");
   }
 
   async logout(req: Request, res: Response): Promise<void> {
-    const accessToken = req.headers.authorization?.split(" ")[1];
-    await this.oAuth2Service.revokeToken(accessToken);
+    res.clearCookie(AppSessionKey.SESSION_TOKEN);
+
+    const user = await this.userService.getUser(req.userID);
+    await this.oAuth2Service.revokeToken(user.tokens.access_token);
+
     await this.userService.deleteUser(req.userID);
+    res.status(200).send("Logged out successfully");
   }
 }
