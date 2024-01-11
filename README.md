@@ -28,3 +28,10 @@ If successful, it triggers the specific pipeline (or many) from AWS or any other
 7. For prod could be the same process or using the option for manual production release using the workflow_dispatch event in GitHub Actions.
 
 
+basic github action structure:
+1. Pre-commit(lint verify for code, commit lint for message according to semver)
+2. pre-push(unit-test)
+3. On Pr open(e2e tests, commitlint)
+4. On merge to branch(stage/dev/main) image build, and deployment
+
+
