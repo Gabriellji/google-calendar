@@ -6,16 +6,16 @@ import {
   Body,
   Row,
   HeaderCell,
-  Cell,
+  Cell
 } from "@table-library/react-table-library/table";
 import { useTheme } from "@table-library/react-table-library/theme";
+import { Event } from "../types/eventTypes";
 
-import { calendar_v3 } from "googleapis";
 
 interface TableProps {
-  data: calendar_v3.Schema$Event[];
+  data: Event[];
   columns: any[];
-  onRowClick: (item: calendar_v3.Schema$Event) => void;
+  onRowClick: (item: Event) => void;
 }
 
 const THEME = {
@@ -68,9 +68,8 @@ const MainTable: React.FC<TableProps> = ({
   const theme = useTheme(THEME);
 
   return (
-    <div>
       <Table data={tableData} theme={theme}>
-        {(tableList: calendar_v3.Schema$Event[]) => (
+        {(tableList: any) => (
           <>
             <Header>
               <HeaderRow>
@@ -80,8 +79,8 @@ const MainTable: React.FC<TableProps> = ({
               </HeaderRow>
             </Header>
             <Body>
-              {tableList.map((item: calendar_v3.Schema$Event) => (
-                <Row key={item.id ?? 'default-id'} item={{ ...item, id: item.id ?? 'default-id' }} onClick={() => onRowClick(item)}>
+              {tableList.map((item: any) => (
+                <Row key={item.id} item={item} onClick={() => onRowClick(item)}>
                   {columns.map((column, index) => (
                     <Cell key={index}>
                       {column.accessor ? column.accessor(item) : ""}
@@ -93,7 +92,6 @@ const MainTable: React.FC<TableProps> = ({
           </>
         )}
       </Table>
-    </div>
   );
 };
 

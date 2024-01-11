@@ -1,9 +1,3 @@
-export interface EventRetrieveParams extends Record<string, any> {
-  maxResults: number;
-  singleEvents: boolean;
-  orderBy: string;
-}
-
 export interface EventAttendee extends Record<string, any> {
   email?: string | null;
   id?: string | null;
@@ -17,7 +11,7 @@ export interface EventDateTime {
   timeZone?: string | null;
 }
 
-export interface EventListSuccessResponse extends Record<string, any> {
+export interface Event extends Record<string, any> {
   attendees?: EventAttendee[];
   created?: string | null;
   description?: string | null;

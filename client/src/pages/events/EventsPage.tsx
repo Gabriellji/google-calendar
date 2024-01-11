@@ -1,11 +1,12 @@
 import { ProtectedRoute } from "../../components/ProtectedRoute";
 import EventsTable from "./components/EventsTable";
-import { useApiRequest } from "../../hooks/useApi";
-import { LOGOUT_URL } from "../../constants/api-urls";
-import styled from "styled-components";
+import { useApi, useApiRequest } from "../../hooks/useApi";
+import { EVENTS_URL, LOGOUT_URL } from "../../constants/api-urls";
 import Button from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { ClientRoute } from "../../constants/routes";
+
+import styled from "styled-components";
 
 const EventsPageContainer = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ const LogoutButton = styled(Button)`
 
 const EventsPage = () => {
   const { sendRequest, isLoading, error } = useApiRequest();
+  const { data: events, isLoading: isEventsLoading, error: eventError} = useApi<Event[]>(EVENTS_URL);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -46,11 +48,11 @@ const EventsPage = () => {
   return (
     <EventsPageContainer>
       <LogoutContainer>
-        <LogoutButton type="button" onClick={handleLogout}>
+        <LogoutButton onClick={handleLogout}>
           Logout
         </LogoutButton>
       </LogoutContainer>
-      <EventsTable />
+	  <EventsTable events={events} isLoading={isEventsLoading} error={eventError} />
     </EventsPageContainer>
   );
 };

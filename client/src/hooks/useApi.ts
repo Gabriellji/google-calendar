@@ -1,33 +1,35 @@
 import { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-interface UseApiHook {
-  data: AxiosResponse | null;
+export interface ApiResponse<T> {
+  data: T | null;
   isLoading: boolean;
   error: Error | null;
 }
 
-interface UseApiRequestHook extends Pick<UseApiHook, "isLoading" | "error"> {
+export interface ApiRequestHook {
   sendRequest: (
     url: string,
     options?: AxiosRequestConfig
-  ) => Promise<AxiosResponse>;
-  response: number | null;
+  ) => Promise<AxiosResponse<any>>;
+  isLoading: boolean;
+  error: Error | null;
+  responseStatus: number | null;
 }
 
-export const useApi = (
+export const useApi = <T = any>(
   url: string,
   options?: AxiosRequestConfig
-): UseApiHook => {
-  const [data, setData] = useState<AxiosResponse | null>(null);
-  const { sendRequest, isLoading, error } = useApiRequest();
+): ApiResponse<T> => {
+  const [data, setData] = useState<T | null>(null);
+  const { sendRequest, isLoading, error, responseStatus } = useApiRequest();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseData = await sendRequest(url, options);
-        setData(responseData);
-      } catch (error: any) {
+        const response: AxiosResponse<T> = await sendRequest(url, options);
+        setData(response.data);
+      } catch (err: any) {
         setData(null);
       }
     };
@@ -38,10 +40,10 @@ export const useApi = (
   return { data, isLoading, error };
 };
 
-export const useApiRequest = (): UseApiRequestHook => {
+export const useApiRequest = (): ApiRequestHook => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const [response, setResponse] = useState<number | null>(null);
+  const [responseStatus, setResponseStatus] = useState<number | null>(null);
 
   const sendRequest = async (url: string, options?: AxiosRequestConfig) => {
     const accessToken = localStorage.getItem("accessToken");
@@ -55,7 +57,7 @@ export const useApiRequest = (): UseApiRequestHook => {
 
     try {
       const response = await axios(url, { ...options, headers });
-      setResponse(response.status);
+      setResponseStatus(response.status);
       return response;
     } catch (error: any) {
       console.error("API request failed:", error);
@@ -66,5 +68,5 @@ export const useApiRequest = (): UseApiRequestHook => {
     }
   };
 
-  return { sendRequest, isLoading, error, response };
+  return { sendRequest, isLoading, error, responseStatus };
 };

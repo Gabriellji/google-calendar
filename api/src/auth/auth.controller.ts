@@ -26,6 +26,8 @@ export class AuthController {
         code
       );
 
+	  console.log('RESPONSE', response)
+
     const existingUser = await this.userService.getUser(response.sub);
 
     if (!existingUser) {
