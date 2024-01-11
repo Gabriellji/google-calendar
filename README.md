@@ -7,7 +7,7 @@ https://github.com/Gabriellji/google-calendar/assets/55960149/f85f937d-4a48-4810
 Requirements: Google account, Firebase Database
 1. Clone repo
 2. Fill up the `.env` (see .env.example file)
-3. in terminal run 
+3. From the root of project in terminal run 
 ```
 docker-compose up --build
 ``` 
